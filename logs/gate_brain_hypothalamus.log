@@ -1,0 +1,199 @@
+--- Y0_bounded
+[PASS] Y0_bounded: {"ok": true, "worst_rate_excursion": 0.0, "worst_adapt_excursion_beyond_adapt_g": 0.0, "vanishing_delays": {"0.001": 0, "60.0": 8, "300.0": 8}, "n_delayed_projections": 8}
+--- Y1_idempotence
+[FAIL] Y1_idempotence: {"ok": false, "a_rollout_twice": true, "b_step_twice_same_state": true, "b_rings_equal": true, "c_step_twice_under_no_grad": true, "c_rings_equal_under_no_grad": true, "e_branch_rerun_identical_under_no_grad": false, "e_detail": {"0.001": {"identical": false, "rings": 8, "max_abs_diff": 3.657332854345441e-07}, "60.0": {"identical": true, "rings": 0, "max_abs_diff": 0.0}, "0.001_grad_enabled": {"identical": true, "rings": 8, "max_abs_diff": 0.0}}, "e_finding": "ibm/circuit.py's Circuit docstring claims two rollouts from one state cannot interfere.  Under torch.no_grad() they DO: Circuit.step writes the delay ring in place unless grad is enabled, and the ring tensors are shared by every state derived from the branch point.  Measured at dt = 1e-3 with 8 rings allocated; clean with grad enabled, and clean at dt = 60 s only because no delay in this module survives that timestep so no ring exists to share.  Not fixed here: ibm/circuit.py is out of scope for this task.  Callers must not branch a rollout under no_grad from a shared state.", "rings_allocated_per_dt": {"0.001": 8, "60.0": 0}, "c_note": "Circuit.step clones a delay ring only when grad is enabled; under no_grad it writes IN PL
+--- Y2_free_run
+[FAIL] Y2_free_run: {"ok": false, "precondition_no_input": false, "projections_into_hyp_scn": ["hyp.scn->hyp.scn"], "hyp_scn_in_drives": false, "dt_s": 60.0, "days": 40, "period_h": 24.180666232638888, "period_sd_h": 0.006110100746154785, "n_cycles": 26, "declared_window_h": [22.0, 26.0], "peak_hz": 1.1288851965218782e-05, "peak_period_h": 24.60637969508482, "peak_prominence_decades": 4.130242347717285, "df_hz": 1.0172526572205243e-06, "band_hz": [1e-05, 1.3e-05], "known_answers_ok": false, "spectral_period_bias_from_known_sine": 0.014691620037230235, "note": "the period is gated on the crossing interval; the spectral peak is quoted beside the prominence and carries the bias above, which the 24.000 h known-answer sine measures on the same grid"}
+      period 24.181 +- 0.006 h over 26 cycles; peak 24.606 h at prominence +4.130 decades
+      known answer sine_24h       24.353 h  prominence +5.8264
+      known answer white_noise    15.871 h  prominence +0.1446
+      known answer constant       18.204 h  prominence +0.0000
+--- Y2b_free_run_replacement
+[PASS] Y2b_free_run_replacement: {"ok": true, "precondition_no_foreign_input": true, "foreign_projections_into_hyp_scn": [], "self_projections_into_hyp_scn": ["hyp.scn->hyp.scn"], "hyp_scn_in_drives": false, "dt_s": 60.0, "days": 40, "period_h": 24.180666232638888, "period_sd_h": 0.006110100746154785, "n_cycles": 26, "declared_window_h": [22.0, 26.0], "peak_hz": 1.1288851965218782e-05, "peak_period_h": 24.60637969508482, "peak_prominence_decades": 4.130242347717285, "df_hz": 1.0172526572205243e-06, "band_hz": [1e-05, 1.3e-05], "null_prominence_mean": 0.06987226009368896, "null_prominence_sd": 0.14333724975585938, "null_draws": 16, "prominence_z_vs_null": 28.327389387890886, "declared_null_sd": 5.0, "known_answer_sine_24h": {"peak_period_h": 24.352598880893524, "prominence": 5.826391220092773}, "known_answer_constant": {"peak_period_h": 18.204442274305816, "prominence": 0.0}, "controls_ok": true, "spectral_period_bias_from_known_sine": 0.014691620037230235, "note": "the period is GATED on the crossing interval.  the spectral peak carries the bias above -- a true 24.000 h sine reads high on this grid -- so the peak is quoted beside the prominence and the prominence is judged against an ensemble null, never against z
+      period 24.181 +- 0.006 h over 26 cycles; peak 24.606 h at prominence +4.130 decades, z = 28.3 against a null of +0.0699 +- 0.1433 over 16 draws
+      known answer sine 24.000 h reads 24.353 h (bias +1.47%), constant reads prominence +0.000000
+--- Y3_entrainment
+[PASS] Y3_entrainment: {"ok": true, "free_run_h": 24.180666232638888, "light_amplitude": 0.06, "must_lock_h": [22.0, 23.0, 24.0, 25.0, 26.0], "must_fail_h": [20.0, 32.0], "report_only_h": [16.0], "all_locked": true, "all_failed_outside": true, "locked": {"22h": true, "23h": true, "24h": true, "25h": true, "26h": true, "20h": false, "32h": false, "16h": false}, "entrainment_range_h": [-2.180666232638888, 1.8193337673611119], "note": "16 h is reported and not gated: a relaxation oscillator frequency-demultiplies and locks 3:2, which is neither entrainment to 16 h nor a failure to be pulled"}
+      T_light  22.0 h ->   22.000 h (err 0.000)  LOCKED
+      T_light  23.0 h ->   23.000 h (err 0.000)  LOCKED
+      T_light  24.0 h ->   24.000 h (err 0.000)  LOCKED
+      T_light  25.0 h ->   25.000 h (err 0.000)  LOCKED
+      T_light  26.0 h ->   26.000 h (err 0.000)  LOCKED
+      T_light  20.0 h ->   22.346 h (err 2.346)  free
+      T_light  32.0 h ->   24.789 h (err 7.211)  free
+      T_light  16.0 h ->   24.000 h (err 8.000)  free
+--- Y4_sleep_pressure
+[PASS] Y4_sleep_pressure: {"ok": true, "spontaneous_ok": true, "bouts_wrong_way": 0, "n_wake_bouts": 19, "n_sleep_bouts": 19, "mean_wake_bout_h": 16.227192982456142, "mean_sleep_bout_h": 7.948245614035089, "sleep_fraction": 0.32034721970558167, "som_range": [5.266615335131064e-05, 0.764512300491333], "tau_rise_ok": true, "tau_fall_ok": true, "rise_slower_than_fall": true, "declared_TAU_SOM_h": 15.0, "rise_over_fall": 2.495102741735389, "literature_note": "human process-S fits give ~18 h rise against ~4 h decay, a ratio of 4.3; this module declares a smaller ratio and the measured one is reported above"}
+      spontaneous: wake 16.23 h, sleep 7.95 h, sleep fraction 0.320, 0 bouts wrong way
+      clamped: rise tau 15.01 h (predicted 15.00), 10-90% 30.68 h | fall tau 6.02 h (predicted 6.00), 90-10% 12.83 h
+--- Y5_drive_changes_value
+[FAIL] Y5_drive_changes_value: {"ok": false, "valuation": {"module_present": true, "id_declared": true, "valuation_pops": ["val.bla", "val.cea", "val.nacc_core", "val.nacc_shell", "val.vp", "val.lhb"]}, "stand_in": "val.nacc_shell", "declared_edges": ["hyp.arc->val.nacc_shell", "hyp.mnpo->val.nacc_shell", "hyp.lh->val.nacc_shell"], "declared_mods": ["hyp.arc=>val.nacc_shell:gain_in"], "cue": 0.35, "intact_difference": 0.02913069725036621, "severed_difference": 0.0, "declared_min_effect": 0.05, "declared_max_severed": 0.005, "note": "ibm/brain/valuation.py does not exist.  val.nacc_shell here is a stand-in built inside this script; the edges into it are read off hypothalamus.external() rather than written here, so what is measured is the module's own declaration.  The severed arm is the control: gate on an ablation, never on a magnitude."}
+      hungry_intact    hyp.arc 0.858  response 1.0000  cue-evoked +0.0000
+      hungry_severed   hyp.arc 0.858  response 0.5987  cue-evoked +0.5155
+      sated_intact     hyp.arc 0.027  response 0.9709  cue-evoked +0.1819
+      sated_severed    hyp.arc 0.027  response 0.5987  cue-evoked +0.5155
+--- Y5b_drive_changes_value_replacement
+[PASS] Y5b_drive_changes_value_replacement: {"ok": true, "valuation": {"module_present": true, "id_declared": true, "valuation_pops": ["val.bla", "val.cea", "val.nacc_core", "val.nacc_shell", "val.vp", "val.lhb"]}, "stand_in": "val.nacc_shell", "declared_edges": ["hyp.arc->val.nacc_shell", "hyp.mnpo->val.nacc_shell", "hyp.lh->val.nacc_shell"], "declared_mods": ["hyp.arc=>val.nacc_shell:gain_in"], "cue": 0.35, "sparsities": ["None", "0.06", "0.08", "0.1", "0.12", "0.2"], "sign_positive_everywhere": true, "severed_exactly_zero_everywhere": true, "intact_difference": {"None": 0.02913069725036621, "0.06": 0.4235360622406006, "0.08": 0.4229722023010254, "0.1": 0.40263432264328003, "0.12": 0.3752879500389099, "0.2": 0.2758011817932129}, "severed_difference": {"None": 0.0, "0.06": 0.0, "0.08": 0.0, "0.1": 0.0, "0.12": 0.0, "0.2": 0.0}, "saturated": {"None": true, "0.06": false, "0.08": false, "0.1": false, "0.12": false, "0.2": true}, "clears_Y5_bar": {"None": false, "0.06": true, "0.08": true, "0.1": true, "0.12": true, "0.2": true}, "note": "ibm/brain/valuation.py does not exist.  val.nacc_shell is a stand-in built inside this script and nowhere else; the edges into it are read off hypothalamus.external() rather than written here
+      sparsity  None: intact +0.0291  severed +0.0000  SATURATED  -
+      sparsity  0.06: intact +0.4235  severed +0.0000     graded  clears 0.05
+      sparsity  0.08: intact +0.4230  severed +0.0000     graded  clears 0.05
+      sparsity   0.1: intact +0.4026  severed +0.0000     graded  clears 0.05
+      sparsity  0.12: intact +0.3753  severed +0.0000     graded  clears 0.05
+      sparsity   0.2: intact +0.2758  severed +0.0000  SATURATED  clears 0.05
+--- Y6_sensitivity
+      BETA_ARC           P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      BETA_LH            P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      BETA_MNPO          P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      BETA_POA           P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      BETA_PVN           P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unmeasured]
+      BETA_SCN           P 12.817 -> 31.875  spanP 19.057  spanRise  0.000  spanFall  0.000
+      BETA_SOM           P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      BETA_VLPO          P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      D_ARC              P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      D_CIRC             P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [orphan]
+      D_LH               P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      D_LIGHT_SCN        P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [orphan]
+      D_MNPO             P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      D_PB_POA           P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [orphan]
+      D_POA              P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      D_PVN              P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unmeasured]
+      D_SLEEP_SWITCH     P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      D_VISCERAL         P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [orphan]
+      GC_G               P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unmeasured]
+      GC_TAU             P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unmeasured]
+      N                  P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unmeasured]
+      PER_G              P   None -> 20.864  spanP    n/a  spanRise  0.000  spanFall  0.000
+      PER_TAU            P 13.736 -> 34.770  spanP 21.035  spanRise  0.000  spanFall  0.000
+      PROCESS_C_BASE     P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      PROCESS_C_GAIN     P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      PROCESS_C_HI       P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      PROCESS_C_LO       P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      SOM_CLEAR_GAIN     P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  6.750
+      SOM_CLEAR_HI       P 24.430 -> 24.430  spanP  0.000  spanRise  7.500  spanFall  0.000
+      SOM_CLEAR_LO       P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      TAU_ARC            P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      TAU_LH             P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      TAU_MNPO           P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      TAU_POA            P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      TAU_PVN            P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unmeasured]
+      TAU_SCN            P  22.75 -> 25.861  spanP  3.111  spanRise  0.000  spanFall  0.000
+      TAU_SOM            P 24.430 -> 24.430  spanP  0.000  spanRise 15.000  spanFall  6.000
+      TAU_VLPO           P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.001  [unexplained]
+      THETA_ARC          P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      THETA_LH           P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      THETA_MNPO         P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      THETA_POA          P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      THETA_PVN          P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unmeasured]
+      THETA_SCN          P 25.597 -> 24.083  spanP  1.514  spanRise  0.000  spanFall  0.000
+      THETA_SOM          P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      THETA_VLPO         P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      VAL_GAIN           P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [orphan]
+      VAL_GAIN_BASE      P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [orphan]
+      VAL_GAIN_HI        P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [orphan]
+      VAL_GAIN_LO        P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [orphan]
+      W_ARC_LH           P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      W_DRIVE_VAL        P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [orphan]
+      W_LC_SCN           P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [orphan]
+      W_LH_ORX           P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [orphan]
+      W_LH_SOM           P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      W_LH_VLPO          P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      W_LH_VTA           P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [orphan]
+      W_LIGHT_SCN        P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [orphan]
+      W_MNPO_LH          P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      W_NTS_ARC          P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [orphan]
+      W_NTS_MNPO         P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [orphan]
+      W_PB_POA           P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [orphan]
+      W_POA_VLPO         P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      W_SCN_LC           P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [orphan]
+      W_SCN_POA          P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      W_SCN_PVN          P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unmeasured]
+      W_SCN_REC          P 8.6666 ->   None  spanP    n/a  spanRise  0.000  spanFall  0.000
+      W_SOM_VLPO         P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      W_VLPO_LH          P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [unexplained]
+      W_VLPO_NM          P 24.430 -> 24.430  spanP  0.000  spanRise  0.000  spanFall  0.000  [orphan]
+[FAIL] Y6_sensitivity: {"ok": false, "n_constants": 70, "baseline": {"period_h": 24.430555555555557, "n_cycles": 4, "tau_rise_h": 15.020837797541958, "tau_fall_h": 6.020990965404473}, "dt_s": 150.0, "clock_constants_live": {"PER_TAU": true, "PER_G": true, "W_SCN_REC": true, "BETA_SCN": true, "THETA_SCN": true, "TAU_SCN": true}, "somnogen_constants_live": {"TAU_SOM": true, "SOM_CLEAR_GAIN": true}, "inert": ["BETA_ARC", "BETA_LH", "BETA_MNPO", "BETA_POA", "BETA_PVN", "BETA_SOM", "BETA_VLPO", "D_ARC", "D_CIRC", "D_LH", "D_LIGHT_SCN", "D_MNPO", "D_PB_POA", "D_POA", "D_PVN", "D_SLEEP_SWITCH", "D_VISCERAL", "GC_G", "GC_TAU", "N", "PROCESS_C_BASE", "PROCESS_C_GAIN", "PROCESS_C_HI", "PROCESS_C_LO", "SOM_CLEAR_LO", "TAU_ARC", "TAU_LH", "TAU_MNPO", "TAU_POA", "TAU_PVN", "TAU_VLPO", "THETA_ARC", "THETA_LH", "THETA_MNPO", "THETA_POA", "THETA_PVN", "THETA_SOM", "THETA_VLPO", "VAL_GAIN", "VAL_GAIN_BASE", "VAL_GAIN_HI", "VAL_GAIN_LO", "W_ARC_LH", "W_DRIVE_VAL", "W_LC_SCN", "W_LH_ORX", "W_LH_SOM", "W_LH_VLPO", "W_LH_VTA", "W_LIGHT_SCN", "W_MNPO_LH", "W_NTS_ARC", "W_NTS_MNPO", "W_PB_POA", "W_POA_VLPO", "W_SCN_LC", "W_SCN_POA", "W_SCN_PVN", "W_SOM_VLPO", "W_VLPO_LH", "W_VLPO_NM"], "inert_by_kind": {"orphan": ["D_CIRC", "D
+      inert over a 3x sweep: BETA_ARC, BETA_LH, BETA_MNPO, BETA_POA, BETA_PVN, BETA_SOM, BETA_VLPO, D_ARC, D_CIRC, D_LH, D_LIGHT_SCN, D_MNPO, D_PB_POA, D_POA, D_PVN, D_SLEEP_SWITCH, D_VISCERAL, GC_G, GC_TAU, N, PROCESS_C_BASE, PROCESS_C_GAIN, PROCESS_C_HI, PROCESS_C_LO, SOM_CLEAR_LO, TAU_ARC, TAU_LH, TAU_MNPO, TAU_POA, TAU_PVN, TAU_VLPO, THETA_ARC, THETA_LH, THETA_MNPO, THETA_POA, THETA_PVN, THETA_SOM, THETA_VLPO, VAL_GAIN, VAL_GAIN_BASE, VAL_GAIN_HI, VAL_GAIN_LO, W_ARC_LH, W_DRIVE_VAL, W_LC_SCN, W_LH_ORX, W_LH_SOM, W_LH_VLPO, W_LH_VTA, W_LIGHT_SCN, W_MNPO_LH, W_NTS_ARC, W_NTS_MNPO, W_PB_POA, W_POA_VLPO, W_SCN_LC, W_SCN_POA, W_SCN_PVN, W_SOM_VLPO, W_VLPO_LH, W_VLPO_NM
+        orphan         D_CIRC, D_LIGHT_SCN, D_PB_POA, D_VISCERAL, VAL_GAIN, VAL_GAIN_BASE, VAL_GAIN_HI, VAL_GAIN_LO, W_DRIVE_VAL, W_LC_SCN, W_LH_ORX, W_LH_VTA, W_LIGHT_SCN, W_NTS_ARC, W_NTS_MNPO, W_PB_POA, W_SCN_LC, W_VLPO_NM
+        unmeasured     BETA_PVN, D_PVN, GC_G, GC_TAU, N, TAU_PVN, THETA_PVN, W_SCN_PVN
+        unexplained    BETA_ARC, BETA_LH, BETA_MNPO, BETA_POA, BETA_SOM, BETA_VLPO, D_ARC, D_LH, D_MNPO, D_POA, D_SLEEP_SWITCH, PROCESS_C_BASE, PROCESS_C_GAIN, PROCESS_C_HI, PROCESS_C_LO, SOM_CLEAR_LO, TAU_ARC, TAU_LH, TAU_MNPO, TAU_POA, TAU_VLPO, THETA_ARC, THETA_LH, THETA_MNPO, THETA_POA, THETA_SOM, THETA_VLPO, W_ARC_LH, W_LH_SOM, W_LH_VLPO, W_MNPO_LH, W_POA_VLPO, W_SCN_POA, W_SOM_VLPO, W_VLPO_LH
+--- Y6b_sensitivity_replacement
+      BETA_ARC           spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.2261 (hyp.arc)
+      BETA_LH            spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.1549 (_sleep_fraction)
+      BETA_MNPO          spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.2255 (hyp.mnpo)
+      BETA_POA           spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.1500 (hyp.poa)
+      BETA_PVN           spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0680 (hyp.pvn)
+      BETA_SCN           spanP 19.057  spanRise  0.000  spanFall  0.000  spanState  0.0893 (hyp.som)
+      BETA_SOM           spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.1936 (_sleep_fraction)
+      BETA_VLPO          spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0642 (hyp.vlpo)
+      D_ARC              spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.4318 (hyp.arc)
+      D_CIRC             spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0000 (hyp.scn)  [orphan]
+      D_LH               spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.2083 (hyp.som)
+      D_LIGHT_SCN        spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0000 (hyp.scn)  [orphan]
+      D_MNPO             spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.4526 (hyp.mnpo)
+      D_PB_POA           spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0000 (hyp.scn)  [orphan]
+      D_POA              spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.3834 (hyp.poa)
+      D_PVN              spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.1868 (hyp.pvn)
+      D_SLEEP_SWITCH     spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0000 (hyp.scn)  [vanishes_at_dt]
+      D_VISCERAL         spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0000 (hyp.scn)  [orphan]
+      GC_G               spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.2075 (hyp.pvn)
+      GC_TAU             spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0022 (hyp.pvn)  [unexplained]
+      N                  spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0000 (hyp.lh)  [unmeasured]
+      PER_G              spanP    n/a  spanRise  0.000  spanFall  0.000  spanState  0.6833 (hyp.scn)
+      PER_TAU            spanP 21.035  spanRise  0.000  spanFall  0.000  spanState  0.1192 (hyp.som)
+      PROCESS_C_BASE     spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.1017 (hyp.vlpo)
+      PROCESS_C_GAIN     spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0880 (hyp.som)
+      PROCESS_C_HI       spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.1146 (hyp.vlpo)
+      PROCESS_C_LO       spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.1084 (hyp.som)
+      SOM_CLEAR_GAIN     spanP  0.000  spanRise  0.000  spanFall  6.750  spanState  0.2561 (_sleep_fraction)
+      SOM_CLEAR_HI       spanP  0.000  spanRise  7.500  spanFall  0.000  spanState  0.0946 (hyp.som)
+      SOM_CLEAR_LO       spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0000 (hyp.scn)  [clamp]
+      TAU_ARC            spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0000 (hyp.lh)  [unexplained]
+      TAU_LH             spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0022 (_sleep_fraction)  [unexplained]
+      TAU_MNPO           spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0000 (hyp.mnpo)  [unexplained]
+      TAU_POA            spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0013 (_sleep_fraction)  [unexplained]
+      TAU_PVN            spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0004 (hyp.pvn)  [unexplained]
+      TAU_SCN            spanP  3.111  spanRise  0.000  spanFall  0.000  spanState  0.0251 (hyp.som)
+      TAU_SOM            spanP  0.000  spanRise 15.000  spanFall  6.000  spanState  0.1015 (hyp.som)
+      TAU_VLPO           spanP  0.000  spanRise  0.000  spanFall  0.001  spanState  0.0022 (_sleep_fraction)  [unexplained]
+      THETA_ARC          spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.1868 (hyp.arc)
+      THETA_LH           spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.1819 (hyp.som)
+      THETA_MNPO         spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.2255 (hyp.mnpo)
+      THETA_POA          spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.3324 (hyp.poa)
+      THETA_PVN          spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.2172 (hyp.pvn)
+      THETA_SCN          spanP  1.514  spanRise  0.000  spanFall  0.000  spanState  0.0908 (hyp.scn)
+      THETA_SOM          spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.2413 (_sleep_fraction)
+      THETA_VLPO         spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.3420 (_sleep_fraction)
+      VAL_GAIN           spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0000 (hyp.scn)  [orphan]
+      VAL_GAIN_BASE      spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0000 (hyp.scn)  [orphan]
+      VAL_GAIN_HI        spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0000 (hyp.scn)  [orphan]
+      VAL_GAIN_LO        spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0000 (hyp.scn)  [orphan]
+      W_ARC_LH           spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.1553 (hyp.som)
+      W_DRIVE_VAL        spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0000 (hyp.scn)  [orphan]
+      W_LC_SCN           spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0000 (hyp.scn)  [orphan]
+      W_LH_ORX           spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0000 (hyp.scn)  [orphan]
+      W_LH_SOM           spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0595 (_sleep_fraction)
+      W_LH_VLPO          spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.3503 (_sleep_fraction)
+      W_LH_VTA           spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0000 (hyp.scn)  [orphan]
+      W_LIGHT_SCN        spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0000 (hyp.scn)  [orphan]
+      W_MNPO_LH          spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0728 (hyp.som)
+      W_NTS_ARC          spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0000 (hyp.scn)  [orphan]
+      W_NTS_MNPO         spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0000 (hyp.scn)  [orphan]
+      W_PB_POA           spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0000 (hyp.scn)  [orphan]
+      W_POA_VLPO         spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.1740 (_sleep_fraction)
+      W_SCN_LC           spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0000 (hyp.scn)  [orphan]
+      W_SCN_POA          spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0919 (hyp.poa)
+      W_SCN_PVN          spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.1585 (hyp.pvn)
+      W_SCN_REC          spanP    n/a  spanRise  0.000  spanFall  0.000  spanState  0.3906 (hyp.scn)
+      W_SOM_VLPO         spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.6062 (hyp.som)
+      W_VLPO_LH          spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.5981 (hyp.som)
+      W_VLPO_NM          spanP  0.000  spanRise  0.000  spanFall  0.000  spanState  0.0000 (hyp.scn)  [orphan]
+[FAIL] Y6b_sensitivity_replacement: {"ok": false, "n_constants": 70, "baseline": {"period_h": 24.430555555555557, "n_cycles": 4, "tau_rise_h": 15.020837797541958, "tau_fall_h": 6.020990965404473, "state": {"hyp.scn": 0.4510127305984497, "hyp.som": 0.5239834785461426, "hyp.vlpo": 0.3245651423931122, "hyp.lh": 0.6859176158905029, "hyp.arc": 0.8581467270851135, "hyp.mnpo": 0.8175726532936096, "hyp.poa": 0.7062289118766785, "hyp.pvn": 0.317421555519104, "_sleep_fraction": 0.32421875}}, "dt_s": 150.0, "clock_constants_live": {"PER_TAU": true, "PER_G": true, "W_SCN_REC": true, "BETA_SCN": true, "THETA_SCN": true, "TAU_SCN": true}, "somnogen_constants_live": {"TAU_SOM": true, "SOM_CLEAR_GAIN": true}, "clamp_binding_fraction_at_baseline": {"SOM_CLEAR_LO": 0.0, "SOM_CLEAR_HI": 0.0, "PROCESS_C_LO": 0.0, "PROCESS_C_HI": 0.0}, "inert": ["D_CIRC", "D_LIGHT_SCN", "D_PB_POA", "D_SLEEP_SWITCH", "D_VISCERAL", "GC_TAU", "N", "SOM_CLEAR_LO", "TAU_ARC", "TAU_LH", "TAU_MNPO", "TAU_POA", "TAU_PVN", "TAU_VLPO", "VAL_GAIN", "VAL_GAIN_BASE", "VAL_GAIN_HI", "VAL_GAIN_LO", "W_DRIVE_VAL", "W_LC_SCN", "W_LH_ORX", "W_LH_VTA", "W_LIGHT_SCN", "W_NTS_ARC", "W_NTS_MNPO", "W_PB_POA", "W_SCN_LC", "W_VLPO_NM"], "inert_by_kind": {"orphan": ["D_CIRC", "D_
+      inert over a 3x sweep: D_CIRC, D_LIGHT_SCN, D_PB_POA, D_SLEEP_SWITCH, D_VISCERAL, GC_TAU, N, SOM_CLEAR_LO, TAU_ARC, TAU_LH, TAU_MNPO, TAU_POA, TAU_PVN, TAU_VLPO, VAL_GAIN, VAL_GAIN_BASE, VAL_GAIN_HI, VAL_GAIN_LO, W_DRIVE_VAL, W_LC_SCN, W_LH_ORX, W_LH_VTA, W_LIGHT_SCN, W_NTS_ARC, W_NTS_MNPO, W_PB_POA, W_SCN_LC, W_VLPO_NM
+        orphan         D_CIRC, D_LIGHT_SCN, D_PB_POA, D_VISCERAL, VAL_GAIN, VAL_GAIN_BASE, VAL_GAIN_HI, VAL_GAIN_LO, W_DRIVE_VAL, W_LC_SCN, W_LH_ORX, W_LH_VTA, W_LIGHT_SCN, W_NTS_ARC, W_NTS_MNPO, W_PB_POA, W_SCN_LC, W_VLPO_NM
+        vanishes_at_dt D_SLEEP_SWITCH
+        clamp          SOM_CLEAR_LO
+        unmeasured     N
+        unexplained    GC_TAU, TAU_ARC, TAU_LH, TAU_MNPO, TAU_POA, TAU_PVN, TAU_VLPO
+      clamps binding at baseline: {'SOM_CLEAR_LO': 0.0, 'SOM_CLEAR_HI': 0.0, 'PROCESS_C_LO': 0.0, 'PROCESS_C_HI': 0.0}
+
+SOME GATES FAILED: ['Y1_idempotence', 'Y2_free_run', 'Y5_drive_changes_value', 'Y6_sensitivity', 'Y6b_sensitivity_replacement'] -- wrote out/gate_brain_hypothalamus.json

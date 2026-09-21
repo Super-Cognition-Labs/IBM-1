@@ -1,0 +1,111 @@
+[PASS] A0_assembly
+      structures_on_disk: ['cortex', 'thalamus', 'basal_ganglia', 'valuation', 'neuromodulators', 'hypothalamus']
+      missing_structures: ['hippocampus', 'cerebellum', 'brainstem', 'cord', 'olfactory']
+      modules_that_would_not_import: {}
+      val_pops: 6
+      val_units: 240
+      n_external_declared: 15
+      resolved: ['val.bla->nm.vta', 'val.lhb->nm.vta', 'val.vp->nm.vta', 'val.nacc_core->nm.vta', 'nm.vta->val.bla', 'nm.vta->val.nacc_core', 'nm.vta->val.nacc_shell', 'val.bla->ctx.medialorbitofrontal.E', 'val.bla->ctx.rostralanteriorcingulate.E', 'ctx.medialorbitofrontal.E->val.nacc_core', 'ctx.medialorbitofrontal.E->val.nacc_shell', 'ctx.medialorbitofrontal.E->val.bla', 'ctx.rostralanteriorcingulate.E->val.nacc_core', 'ctx.rostralanteriorcingulate.E->val.cea', 'val.nacc_shell->hyp.lh']
+      orphan_waiting_on_an_unwritten_structure: []
+      orphan_though_the_module_exists_THIS_IS_A_TYPO: []
+      CONFLICT_foreign_edges_naming_a_val_pop_that_does_not_exist: [{'declared_by': 'hypothalamus', 'edge': 'hyp.arc->val.nac.shell', 'sign': 1, 'weight': 0.7}, {'declared_by': 'hypothalamus', 'edge': 'hyp.mnpo->val.nac.shell', 'sign': 1, 'weight': 0.7}, {'declared_by': 'hypothalamus', 'edge': 'hyp.lh->val.nac.shell', 'sign': 1, 'weight': 0.7}]
+      CONFLICT_duplicate_edge_keys_across_structures: {'ctx.rostralmiddlefrontal.E->thal.md.relay': ['thalamus', 'thalamus']}
+      rule: every external edge whose other end's structure module exists on disk must resolve; edges waiting on an unwritten structure are listed, not counted against this module
+      note: the two CONFLICT lists are defects in sibling modules.  They are measured here and reported rather than fixed, because this gate's module is not allowed to edit them, and rather than dropped, because an edge that quietly disappears is a loop that quietly stops existing
+
+[PASS] V0_bounded
+      worst_excursion: 0.0
+      resting: {'val.bla': 0.07622364908456802, 'val.cea': 0.08759176731109619, 'val.nacc_core': 0.2032608538866043, 'val.nacc_shell': 0.14965057373046875, 'val.vp': 0.5048158764839172, 'val.lhb': 0.49028539657592773}
+      pinned: []
+      tonic_offset_from_r_rest: {'val.vp': 0.004815876483917236, 'val.lhb': 0.009714603424072266}
+      declared_minus_measured: {'r_core_rest': 0.0027391461133956796, 'r_cea_rest': 0.0005917673110961974}
+      vanishing_delays_at_dt: []
+      rule: worst excursion 0.0; no rate outside (0.02, 0.98); vp and lhb within 0.05 of r_rest; r_core_rest and r_cea_rest within 0.02 of measured
+
+[PASS] V1_idempotence
+      noise_tapes_equal: True
+      max_abs_rate_diff: 0.0
+      max_abs_da_diff: 0.0
+      max_abs_three_way_diff: 0.0
+      rule: same seed, same snapshot, bit-identical; the noise tapes torch.equal
+
+[PASS] V2_three_way_prediction_error
+      baseline_da_drive: -0.63211
+      unexpected: 0.35795
+      predicted: 0.00474
+      omitted: -0.543
+      predicted_over_unexpected: 0.01324
+      a_unexpected_raises: True
+      b_predicted_silent: True
+      c_omitted_below_baseline: True
+      d_null_outcome_control: True
+      null_outcome: {'unexpected': -0.004101395606994629, 'predicted': -0.018939077854156494, 'omitted': -0.018939077854156494}
+      expectation_val_nacc_core: {'naive': 0.24135108292102814, 'predicted': 0.4673042297363281, 'omitted': 0.429912805557251}
+      val_lhb_at_outcome: {'naive': 0.6900102496147156, 'predicted': 0.9628946185112, 'omitted': 0.9464404582977295}
+      rule: unexpected > +0.05; |predicted| < 0.25 x unexpected; omitted < -0.05; null outcome within +-0.05 on all three
+
+[PASS] V3_separable_valence
+      cosine: 0.28214
+      angle_deg: 73.61199
+      known_answer_signed_scalar_cosine: -1.0
+      norms: {'positive': 0.9248271584510803, 'negative': 0.7666314840316772}
+      da_positive: 0.35646
+      da_negative: -0.34586
+      rule: |cos| <= 0.5; a one-signed-scalar model gives exactly -1, and the metric is checked against that case in the same run
+      per-population response (positive | negative):
+        val.bla          +0.5912   -0.0004
+        val.cea          +0.1236   +0.5747
+        val.nacc_core    +0.0383   +0.0009
+        val.nacc_shell   +0.6502   -0.0002
+        val.vp           -0.1611   -0.3697
+        val.lhb          +0.2008   +0.3475
+
+[PASS] V4_habenula_load_bearing
+      intact_omitted: -0.543
+      silenced_omitted: 0.02881
+      dip_removed_fraction: 0.94695
+      silenced_unexpected: 0.57805
+      silenced_predicted: 0.59449
+      silenced_lhb_at_outcome: {'naive': 0.5, 'predicted': 0.5, 'omitted': 0.5}
+      rule: with w_vp_lhb = 0 the omission response must NOT clear -0.05, i.e. V2c must fail
+      note: the silenced arm's PREDICTED number is reported too: with no habenula there is nothing to subtract, so a fully predicted reward bursts as hard as an unexpected one
+
+[PASS] V5_extinction
+      first_trial: {'trial': 1, 'response': -0.5427311658859253, 'val_nacc_core': 0.4299456477165222, 'val_lhb': 0.9462510943412781}
+      last_trial: {'trial': 8, 'response': -0.0355377197265625, 'val_nacc_core': 0.21063172817230225, 'val_lhb': 0.5194746255874634}
+      deepest_trial_reported_as_a_maximum: {'trial': 1, 'response': -0.5427311658859253, 'val_nacc_core': 0.4299456477165222, 'val_lhb': 0.9462510943412781}
+      rule: |last| < 0.5 x |first| AND val.nacc_core falls; the FINAL trial is the verdict, the deepest is reported as a maximum
+        omission 1: response -0.5427   val.nacc_core 0.4299   val.lhb 0.9463
+        omission 2: response -0.4450   val.nacc_core 0.3294   val.lhb 0.8600
+        omission 3: response -0.3050   val.nacc_core 0.2743   val.lhb 0.7420
+        omission 4: response -0.1882   val.nacc_core 0.2440   val.lhb 0.6454
+        omission 5: response -0.1140   val.nacc_core 0.2274   val.lhb 0.5839
+        omission 6: response -0.0740   val.nacc_core 0.2185   val.lhb 0.5507
+        omission 7: response -0.0491   val.nacc_core 0.2134   val.lhb 0.5302
+        omission 8: response -0.0355   val.nacc_core 0.2106   val.lhb 0.5195
+
+[PASS] V6_sensitivity
+      baseline_three: {'unexpected': 0.3579515218734741, 'predicted': 0.004739522933959961, 'omitted': -0.5430036783218384}
+      claimed_mechanism_span: {'w_lhb_vta': 0.29487377405166626, 'w_actual': 0.27985483407974243, 'w_vp_lhb': 0.17896896600723267, 'w_bla_core': 0.15946847200393677, 'w_core_vp': 0.1165047287940979, 'tau_core': 0.054719507694244385}
+      inert_under_0.020_over_3x: ['d_bla_vta', 'tau_cea', 'tau_vp', 'd_lhb_vta', 'w_core_vta', 'd_cea_vp', 'd_vp_lhb', 'sigma', 'd_bla_cea', 'd_core_vp', 'd_bla_nacc', 'd_vp_vta', 'd_core_vta', 'tau_shell', 'w_bla_shell']
+      n_inert: 15
+      n_swept: 51
+      inert_diagnosis: {'d_bla_vta': 'a conduction delay of 10.0 ms read through a 200 ms response window: +-50% shifts a term by 5.0 ms inside that mean.  Delays are the conduction budget of a LOOP, and this preparation is open', 'tau_cea': 'a membrane time constant of 30 ms read through a 200 ms window: the population is at its plateau either way', 'tau_vp': 'a membrane time constant of 20 ms read through a 200 ms window: the population is at its plateau either way', 'd_lhb_vta': 'a conduction delay of 12.0 ms read through a 200 ms response window: +-50% shifts a term by 6.0 ms inside that mean.  Delays are the conduction budget of a LOOP, and this preparation is open', 'w_core_vta': 'small BY DESIGN at 0.10: it closes the `val` loop and is deliberately not the subtraction, which is what lets V4 fail.  Measured not carrying it, as declared', 'd_cea_vp': 'a conduction delay of 5.0 ms read through a 200 ms response window: +-50% shifts a term by 2.5 ms inside that mean.  Delays are the conduction budget of a LOOP, and this preparation is open', 'd_vp_lhb': 'a conduction delay of 6.0 ms read through a 200 ms response window: +-50% shifts a term by 3.0 ms inside that mean.  Delays are the conduction budget of a LOOP, and this preparation is open', 'sigma': 'background noise, averaged over 32-48 units before it reaches any projection', 'd_bla_cea': 'a conduction delay of 4.0 ms read through a 200 ms response window: +-50% shifts a term by 2.0 ms inside that mean.  Delays are the conduction budget of a LOOP, and this preparation is open', 'd_core_vp': 'a conduction delay of 5.0 ms read through a 200 ms response window: +-50% shifts a term by 2.5 ms inside that mean.  Delays are the conduction budget of a LOOP, and this preparation is open', 'd_bla_nacc': 'a conduction delay of 6.0 ms read through a 200 ms response window: +-50% shifts a term by 3.0 ms inside that mean.  Delays are the conduction budget of a LOOP, and this preparation is open', 'd_vp_vta': 'a conduction delay of 8.0 ms read through a 200 ms response window: +-50% shifts a term by 4.0 ms inside that mean.  Delays are the conduction budget of a LOOP, and this preparation is open', 'd_core_vta': 'a conduction delay of 8.5 ms read through a 200 ms response window: +-50% shifts a term by 4.2 ms inside that mean.  Delays are the conduction budget of a LOOP, and this preparation is open', 'tau_shell': 'off the path to nm.vta: val.nacc_shell has no route to it in the declared graph, so this constant cannot move the drive.  The pull is an OUTPUT of this structure', 'w_bla_shell': 'off the path to nm.vta: val.nacc_shell has no route to it in the declared graph, so this constant cannot move the drive.  The pull is an OUTPUT of this structure'}
+      undiagnosed_inert: []
+      pops_that_reach_nm_vta: ['ctx.medialorbitofrontal.E', 'ctx.rostralanteriorcingulate.E', 'nm.vta', 'val.bla', 'val.cea', 'val.lhb', 'val.nacc_core', 'val.vp']
+      not_exercised_orphan_edges: ['w_vta_bla', 'w_vta_core', 'w_vta_shell', 'w_bla_mofc', 'w_bla_racc', 'w_mofc_core', 'w_mofc_shell', 'w_mofc_bla', 'w_racc_core', 'w_racc_cea', 'w_shell_lh', 'd_vta_bla', 'd_vta_nacc', 'd_bla_ctx', 'd_ctx_val', 'd_shell_hyp']
+      not_exercised_but_moved: []
+      rule: every constant in ('tau_core', 'w_bla_core', 'w_core_vp', 'w_vp_lhb', 'w_lhb_vta', 'w_actual') must move one of the three numbers by more than 0.02; the 16 constants on edges absent from this preparation are listed separately and must move NOTHING (if one moves the partition is wrong); and every INERT constant must carry a diagnosis -- a flat sweep with no reason found fails this gate
+      largest movers over the 3x sweep:
+        theta_e        +0.3  span 0.5337
+        beta_e         +10  span 0.5175
+        theta_core     +0.35  span 0.5028
+        beta_core      +6  span 0.4292
+        r_core_rest    +0.206  span 0.3635
+        beta_tonic     +6  span 0.2992
+        w_lhb_vta      +1.25  span 0.2949
+        w_actual       +1  span 0.2799
+        d_tonic        +0.05  span 0.2764
+        r_rest         +0.5  span 0.2644
+
+ALL GATES PASS -- wrote out/gate_brain_valuation.json (237 s)

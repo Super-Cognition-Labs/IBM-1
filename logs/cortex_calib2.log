@@ -1,0 +1,14 @@
+budget rescale factors: min 0.0135 median 0.0202 max 0.0442
+    pass  0  worst relative error 100.00%
+    pass  1  worst relative error 100.00%
+    pass  2  worst relative error 100.00%
+    pass  3  worst relative error 100.00%
+    pass  4  worst relative error 100.00%
+    pass  5  worst relative error 100.00%
+    pass  6  worst relative error 100.00%
+    pass  7  worst relative error 100.00%
+    pass  8  worst relative error 100.00%
+    pass  9  worst relative error 100.00%
+on target 0/30  active min 0.0000 med 0.0000 max 0.0000
+worst saturated: 1.0
+rate Hz: min 0.18 med 25.80 max 93.58

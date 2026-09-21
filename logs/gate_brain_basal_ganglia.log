@@ -1,0 +1,65 @@
+[PASS] B0_bounded: {'ok': True, 'worst_excursion': 0.0, 'checked': "every basal-ganglia population's rate at every step of every case, not the endpoint", 'cases_per_dt': '6 in the batch: injected current -5/0/+5 on EVERY bg population at once, crossed with a saturating stop pulse, all four cortical proposals at 0.999', 'populations_tested': 20, 'not_tested': 'eta -- the OU background is a CURRENT, not a rate, and the engine does not claim it is in [0, 1]', 'seconds': 6.3}
+[PASS] B1_idempotent: {'ok': True, 'declarations_pure': {'pops': True, 'internal': True, 'external': True, 'mods': True, 'drives': True}, 'wiring_identical_at_same_seed': True, 'rollout_bit_identical': True, 'note': "not a known-answer check: it tests whether the module is a FUNCTION of its arguments at all (CLAUDE.md, 'call it twice at the same input')", 'seconds': 4.8}
+[PASS] B2_selection: {'ok': True, 'n_channels_below_threshold': 1, 'threshold_frac_of_rest': 0.5, 'winner': 'motor', 'winner_has_largest_proposal': True, 'winner_gpi_drop': 0.8234915733337402, 'runner_up': 'limbic', 'runner_up_gpi_drop': -0.36439788341522217, 'margin_in_drop': 1.1878894567489624, 'losers_all_at_or_above_rest': True, 'loser_floor': 0.98, 'proposals': {'motor': 0.9, 'oculomotor': 0.7, 'associative': 0.62, 'limbic': 0.55}, 'gpi_hz_rest': {'motor': 69.83, 'oculomotor': 70.03, 'associative': 70.33, 'limbic': 70.16}, 'gpi_hz_final': {'motor': 12.32, 'oculomotor': 96.81, 'associative': 96.32, 'limbic': 95.72}, 'declared_rest_hz': {'bg.gpe.motor': 60.0, 'bg.gpi.motor': 70.0, 'bg.stn.motor': 25.0, 'bg.d1.motor': 0.36, 'bg.d2.motor': 0.36, 'bg.gpe.oculomotor': 60.0, 'bg.gpi.oculomotor': 70.0, 'bg.stn.oculomotor': 25.0, 'bg.d1.oculomotor': 0.36, 'bg.d2.oculomotor': 0.36, 'bg.gpe.associative': 60.0, 'bg.gpi.associative': 70.0, 'bg.stn.associative': 25.0, 'bg.d1.associative': 0.36, 'bg.d2.associative': 0.36, 'bg.gpe.limbic': 60.0, 'bg.gpi.limbic': 70.0, 'bg.stn.limbic': 25.0, 'bg.d1.limbic': 0.36, 'bg.d2.limbic': 0.36}, 'seconds': 3.9}
+[PASS] B3_stop: {'ok': True, 'channels_selected_before_pulse': 1, 'latency_ms': 37.0, 'declared_bar_ms': 200.0, 'catalogue_latency_ms': [120.0, 200.0], 'faster_than_catalogue_floor': True, 'finding_if_faster': "the catalogue's 120-200 ms is a behavioural stop-signal reaction time and includes the cortical detection of the cue, which this module does not contain; a shorter NEURAL latency is reported as a finding, not failed.  v2 measured 22.0 ms", 'hyperdirect_path_ms': 6.5, 'gpi_hz_at_pulse': {'motor': 12.34, 'oculomotor': 96.78, 'associative': 96.43, 'limbic': 95.72}, 'gpi_hz_50ms_after': {'motor': 79.9, 'oculomotor': 99.86, 'associative': 99.84, 'limbic': 99.81}, 'stn_hz_50ms_after': {'motor': 100.0, 'oculomotor': 97.86, 'associative': 97.62, 'limbic': 97.29}, 'seconds': 5.5}
+[PASS] B4_beta: {'ok': True, 'band': [13.0, 30.0], 'catalogue_peak_hz': 20.0, 'gated_on': 'stn channel-average prominence > 0 and its peak inside the band', 'phase_condition_prediction_hz': 23.653024310049744, 'note': 'peak_frequency is a soft-argmax and returns the band centre on a flat spectrum, so the prominence is the gate and the frequency is context. The single-channel readings are here because a statistic computed on the population average and on one unit can differ by 2x, and where they do at most one of them is about the circuit (CLAUDE.md). The envelope CV is reported only: a 17 Hz-wide band has an envelope correlation time near 59 ms whatever generates the signal', 'seconds': 20.0}
+      stn: channel average  22.89 Hz prominence +1.259   singles [21.87, 22.24, 22.09, 22.28] / [0.78, 0.73, 0.76, 0.74]   envelope CV 0.535
+      gpe: channel average  22.96 Hz prominence +1.229   singles [22.87, 22.84, 22.72, 22.94] / [0.83, 0.81, 0.8, 0.78]   envelope CV 0.537
+[PASS] B5_dopamine: {'ok': True, 'beta_rose': True, 'selection_weakened': True, 'd_prominence': 0.14877843856811523, 'd_winner_drop': -1.1052733659744263, 'declared_direction': "lowering the rate of nm.snc/nm.vta raises the resting beta prominence AND shrinks the winner's GPi drop -- the Parkinsonian direction, from one change, with no branch on dopamine anywhere in the module", 'seconds': 22.2}
+      tonic_0.50  beta  23.04 Hz prom +1.281   STN 25.24 Hz D2  0.41 Hz   winner drop +0.823  selected 1
+      low_0.20    beta  23.38 Hz prom +1.430   STN 27.86 Hz D2  4.35 Hz   winner drop -0.282  selected 0
+[PASS] B6_channels: {'ok': True, 'worst_leakage_drop': -0.12393105030059814, 'leak_max': 0.05, 'sign_convention': "leakage is a DROP, so negative means the undriven channel's GPi ROSE, which is the prediction: the only thing crossing channels is the subthalamic efferent and it pushes GPi up", 'seconds': 11.6}
+      drive motor        -> released 1, drop +0.969, leakage {'oculomotor': -0.1239, 'associative': -0.1284, 'limbic': -0.136}
+      drive oculomotor   -> released 1, drop +0.970, leakage {'motor': -0.1327, 'associative': -0.1285, 'limbic': -0.136}
+      drive associative  -> released 1, drop +0.969, leakage {'motor': -0.133, 'oculomotor': -0.1243, 'limbic': -0.1364}
+      drive limbic       -> released 1, drop +0.969, leakage {'motor': -0.1331, 'oculomotor': -0.1243, 'associative': -0.1288}
+[....] B7_sensitivity: sweeping every declared constant +-50% (42 of them) ...
+      rest_gpe       beta  22.38 ->  16.71 Hz (span  5.67)   margin +1.277 -> +0.521 (span 0.756)
+      rest_gpi       beta  23.15 ->  23.15 Hz (span  0.00)   margin +2.260 -> +0.082 (span 2.178)
+      rest_stn       beta  18.42 ->  23.63 Hz (span  5.21)   margin +1.131 -> +1.244 (span 0.113)
+      beta_msn       beta  23.13 ->  23.15 Hz (span  0.02)   margin +0.980 -> +1.200 (span 0.220)
+      theta_msn      beta  23.07 ->  23.15 Hz (span  0.08)   margin +1.176 -> +1.072 (span 0.104)
+      beta_gpe       beta  17.85 ->  25.30 Hz (span  7.45)   margin +1.178 -> +1.196 (span 0.018)
+      beta_gpi       beta  23.15 ->  23.15 Hz (span  0.00)   margin +0.740 -> +1.363 (span 0.623)
+      beta_stn       beta  17.70 ->  23.55 Hz (span  5.85)   margin +1.224 -> +1.159 (span 0.065)
+      tau_msn        beta  23.16 ->  23.15 Hz (span  0.01)   margin +1.191 -> +1.191 (span 0.000)
+      tau_gpe        beta  27.54 ->  19.34 Hz (span  8.19)   margin +1.191 -> +1.191 (span 0.000)
+      tau_gpi        beta  23.15 ->  23.15 Hz (span  0.00)   margin +1.191 -> +1.191 (span 0.000)
+      tau_stn        beta  27.37 ->  18.53 Hz (span  8.84)   margin +1.237 -> +1.191 (span 0.046)
+      w_ctx_d1       beta  23.15 ->  23.15 Hz (span  0.00)   margin +0.000 -> +1.186 (span 1.186)
+      w_ctx_d2       beta  23.15 ->  23.15 Hz (span  0.00)   margin +1.326 -> +1.179 (span 0.147)
+      w_str_lat      beta  23.15 ->  23.15 Hz (span  0.00)   margin +1.138 -> +1.192 (span 0.054)
+      w_d1_gpi       beta  23.15 ->  23.15 Hz (span  0.00)   margin +0.024 -> +1.368 (span 1.344)
+      w_d2_gpe       beta  23.15 ->  23.15 Hz (span  0.00)   margin +1.319 -> +1.175 (span 0.144)
+      w_gpe_stn      beta  17.97 ->  23.53 Hz (span  5.56)   margin +0.811 -> +1.203 (span 0.392)
+      w_stn_gpe      beta  17.68 ->  23.51 Hz (span  5.84)   margin +0.976 -> +1.201 (span 0.225)
+      w_stn_gpi      beta  23.15 ->  23.15 Hz (span  0.00)   margin +1.168 -> +0.529 (span 0.639)
+      w_gpe_gpi      beta  23.15 ->  23.15 Hz (span  0.00)   margin +1.306 -> +0.986 (span 0.320)
+      w_gpe_gpe      beta  22.67 ->  23.65 Hz (span  0.98)   margin +1.193 -> +1.189 (span 0.004)
+      w_ctx_stn      beta  23.15 ->  23.15 Hz (span  0.00)   margin +1.199 -> +0.841 (span 0.358)
+      w_stop_stn     beta  23.15 ->  23.15 Hz (span  0.00)   margin +1.191 -> +1.191 (span 0.000)
+      w_gpi_thal     beta  23.15 ->  23.15 Hz (span  0.00)   margin +1.191 -> +1.191 (span 0.000)
+      stn_diffuse    beta  23.14 ->  23.16 Hz (span  0.02)   margin +0.526 -> +1.330 (span 0.804)
+      da_baseline    beta  23.13 ->  23.33 Hz (span  0.21)   margin +1.348 -> +0.004 (span 1.344)
+      k_da_gain      beta  23.15 ->  23.15 Hz (span  0.00)   margin +1.191 -> +1.191 (span 0.000)
+      k_da_theta     beta  23.15 ->  23.15 Hz (span  0.00)   margin +1.191 -> +1.191 (span 0.000)
+      sigma          beta  23.27 ->  23.00 Hz (span  0.26)   margin +1.199 -> +1.178 (span 0.021)
+      tau_eta        beta  23.21 ->  23.10 Hz (span  0.12)   margin +1.191 -> +1.191 (span 0.000)
+      d_ctx_str      beta  23.15 ->  23.15 Hz (span  0.00)   margin +1.191 -> +1.191 (span 0.000)
+      d_ctx_stn      beta  23.15 ->  23.15 Hz (span  0.00)   margin +1.191 -> +1.191 (span 0.000)
+      d_str_gpi      beta  23.15 ->  23.15 Hz (span  0.00)   margin +1.191 -> +1.191 (span 0.000)
+      d_str_gpe      beta  23.16 ->  23.15 Hz (span  0.01)   margin +1.191 -> +1.191 (span 0.000)
+      d_gpe_stn      beta  25.17 ->  21.29 Hz (span  3.88)   margin +1.191 -> +1.191 (span 0.000)
+      d_stn_gpe      beta  24.46 ->  21.83 Hz (span  2.62)   margin +1.191 -> +1.191 (span 0.000)
+      d_stn_gpi      beta  23.15 ->  23.15 Hz (span  0.00)   margin +1.191 -> +1.191 (span 0.000)
+      d_gpi_thal     beta  23.15 ->  23.15 Hz (span  0.00)   margin +1.191 -> +1.191 (span 0.000)
+      d_gpe_gpi      beta  23.15 ->  23.15 Hz (span  0.00)   margin +1.191 -> +1.191 (span 0.000)
+      d_str_lat      beta  23.15 ->  23.15 Hz (span  0.00)   margin +1.191 -> +1.191 (span 0.000)
+      d_gpe_gpe      beta  22.95 ->  23.34 Hz (span  0.39)   margin +1.191 -> +1.191 (span 0.000)
+[PASS] B7_sensitivity: {'ok': True, 'baseline_beta_hz': 23.152812957763672, 'baseline_prominence': 1.324331283569336, 'baseline_margin': 1.1910746097564697, 'claimed_clock_span_hz': {'tau_gpe': 8.194366455078125, 'tau_stn': 8.83775520324707}, 'claimed_selection_span_margin': {'w_d1_gpi': 1.3440356254577637}, 'rule': 'tau_stn and tau_gpe must each move the beta peak by > 1.0 Hz; w_d1_gpi must move the selection margin by > 0.05', 'inert_both': ['tau_msn', 'tau_gpi', 'w_stop_stn', 'w_gpi_thal', 'k_da_gain', 'k_da_theta', 'tau_eta', 'd_ctx_str', 'd_ctx_stn', 'd_str_gpi', 'd_str_gpe', 'd_stn_gpi', 'd_gpi_thal', 'd_gpe_gpi', 'd_str_lat'], 'inert_but_declared_zero': [], 'inert_diagnosis': {'tau_msn': 'steady-state observables: sets how fast a selection arrives, not its level', 'tau_gpi': 'steady-state observables: sets how fast the pause arrives, not its depth', 'w_stop_stn': 'not exercised: no stop pulse in either measurement (B3 moves it)', 'w_gpi_thal': 'open loop in THIS HARNESS: no thalamic relay here, so the edge is dropped as an orphan.  A full assembly keeps it', 'k_da_gain': "not exercised: measured at the nigral tonic rate, where Mod's factor is 1", 'k_da_theta': "not exercised: measured at the nigral tonic rate, where Mod's factor is 1", 'tau_eta': "steady-state observables: the background's corner, well outside the band", 'd_ctx_str': 'steady-state observables: a delay in a feedforward chain', 'd_ctx_stn': "not exercised: no stop pulse, and the proposal's collateral is a delay into a steady state", 'd_str_gpi': 'steady-state observables: a delay into GPi, which nothing reads back', 'd_str_gpe': 'steady-state observables: a delay in a feedforward chain', 'd_stn_gpi': 'steady-state observables: a delay into GPi, which nothing reads back', 'd_gpi_thal': 'open loop in THIS HARNESS: no thalamic relay here, so the edge is dropped as an orphan.  A full assembly keeps it', 'd_gpe_gpi': 'steady-state observables: a delay into GPi, which nothing reads back', 'd_str_lat': 'steady-state observables: a delay inside a winner-take-all that settles'}, 'inert_predicted_and_not_found': [], 'inert_definition': 'span < 0.2 Hz in beta AND < 0.02 in the selection margin, over the whole 3x sweep', 'instrument': {'quiet_s': 0.6, 'driven_s': 0.35, 'batch': 64, 'nperseg': 512, 'paired_seed': 5, 'bias_vs_gate_B4': 'about +0.6 Hz high, common to every arm; this gate reports SPANS, not levels'}, 'measured_at': {'nigral_rate': 0.5, 'resting_cortical_drive': 0.0, 'proposals': {'motor': 0.9, 'oculomotor': 0.7, 'associative': 0.62, 'limbic': 0.55}, 'stop_pulse': 0.0}, 'seconds': 287.0}
+      inert over the whole 3x sweep: tau_msn, tau_gpi, w_stop_stn, w_gpi_thal, k_da_gain, k_da_theta, tau_eta, d_ctx_str, d_ctx_stn, d_str_gpi, d_str_gpe, d_stn_gpi, d_gpi_thal, d_gpe_gpi, d_str_lat
+      inert because declared at zero (not a finding): none
+      UNDIAGNOSED inert constants: none
+      predicted inert and NOT inert: none
+
+ALL GATES PASS -- wrote out/gate_brain_basal_ganglia.json

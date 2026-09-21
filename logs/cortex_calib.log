@@ -1,0 +1,13 @@
+    pass  0  worst relative error 102.84%
+    pass  1  worst relative error 197.75%
+    pass  2  worst relative error 100.00%
+    pass  3  worst relative error 333.54%
+    pass  4  worst relative error 100.00%
+    pass  5  worst relative error 305.56%
+    pass  6  worst relative error 99.86%
+    pass  7  worst relative error 304.27%
+    pass  8  worst relative error 99.72%
+    pass  9  worst relative error 317.14%
+on target 0/30  active min 0.0001 med 0.0197 max 0.0411
+w_inh min 0.907 med 4.378 max 5.530
+worst saturated: 1.0

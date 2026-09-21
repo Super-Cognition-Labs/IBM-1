@@ -1,0 +1,19 @@
+    pass  0  worst relative error 278.62%
+    pass  1  worst relative error 240.43%
+    pass  2  worst relative error 125.25%
+    pass  3  worst relative error 100.00%
+    pass  4  worst relative error 104.90%
+    pass  5  worst relative error 105.74%
+    pass  6  worst relative error 231.94%
+    pass  7  worst relative error 100.00%
+    pass  8  worst relative error 121.77%
+    pass  9  worst relative error 130.39%
+    pass 10  worst relative error 247.66%
+    pass 11  worst relative error 253.91%
+    pass 12  worst relative error 107.12%
+    pass 13  worst relative error 245.01%
+ON TARGET 3/30
+active  min 0.0000 med 0.0000 max 0.2307
+w_inh   min 0.001 med 0.001 max 0.198
+worst saturated population: 1.0
+E rate Hz: min 0.11 med 4.72 max 25.15
