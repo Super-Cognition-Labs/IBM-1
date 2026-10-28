@@ -95,12 +95,15 @@
          nothing here goes to "measured" on a training curve or an in-sample
          spectrum.
 
-         all eleven always show, packed four across (.is-all).  there was a
-         More/Fewer toggle over the last six; it went because the user wants the
-         whole set on the page, not five with the rest behind a click.  brain.js
-         animates only the figures actually on screen, on one shared WebGL context. -->
-    <!-- ROW STATUS FOR THE RHYTHM TABLE AT THE FOOT OF THIS SECTION.  the visible
-         table states the END STATE: sixty-four rhythms over thirty-seven loops, each
+         2026-10-28: the user asked for the section to be cut down to three named
+         loops and a fourth brain reading "N more circuits", with one-sentence
+         captions and no rhythm table.  the other eight drawn loops are still
+         registered in resonance.js and play in turn inside rz_more; N comes from
+         data/rhythms.js.  brain.js animates only the figures actually on screen,
+         on one shared WebGL context. -->
+    <!-- ROW STATUS FOR THE RHYTHM CATALOGUE.  the table that used to sit at the
+         foot of this section was removed on 2026-10-28 at the user's request; the
+         catalogue still drives the "N more circuits" count.  it states the END STATE: sixty-four rhythms over thirty-seven loops, each
          one a consequence of a ring with a delay.  what each row's standing actually
          is lives on its `data-status` attribute ("<evidence> <substrate>", written by
          rhythmtable.js out of the catalogue) and in docs/LOG.md -- never in the
@@ -143,118 +146,41 @@
         <!-- measured: sleep-edfx, held out by subject (see the comment above) -->
         <article class="rz-tile" data-status="measured">
           <figure class="snap rz-snap" data-snap="rz_tct"><canvas></canvas><svg class="leaders"></svg><div class="snap-labels"></div></figure>
-          <h3>Thalamo-Cortico-Thalamic Alpha</h3>
-          <p class="rz-say">The loop the whole brain integrates through: cortex drives thalamus, and
-          thalamus drives cortex back.</p>
-          <ul class="st-figs rz-figs">
-            <li><b>1 Hz</b><span>deep-sleep slow wave, from one declared time constant.</span></li>
-            <li><b>13.45 Hz</b><span>spindles — on held-out subjects, beats the untouched 10 Hz alpha
-            prior at p = 7.2e-11.</span></li>
-          </ul>
-        </article>
-
-        <!-- declared: design intent, no numbers -->
-        <article class="rz-tile" data-status="declared">
-          <figure class="snap rz-snap" data-snap="rz_bg"><canvas></canvas><svg class="leaders"></svg><div class="snap-labels"></div></figure>
-          <h3>Cortico-Basal-Ganglia-Thalamic Beta</h3>
-          <p class="rz-say">Motor and premotor cortex propose; the striatum and pallidum release one
-          proposal and suppress the rest; the thalamus returns the winner. The goal is that action
-          selection falls out of a loop that was declared, rather than out of a policy that was trained.</p>
+          <h3>Thalamo-Cortical Alpha</h3>
+          <p class="rz-say">Cortex and thalamus drive each other. Fitted to sleep, it finds spindles at
+          13.45 Hz in people it never saw (p = 7.2e-11).</p>
         </article>
 
         <!-- declared: design intent, no numbers -->
         <article class="rz-tile" data-status="declared">
           <figure class="snap rz-snap" data-snap="rz_hpc"><canvas></canvas><svg class="leaders"></svg><div class="snap-labels"></div></figure>
-          <h3>Hippocampal–Entorhinal Theta–Gamma</h3>
-          <p class="rz-say">Entorhinal input rides a slow theta cycle, and each cycle is divided into
-          faster gamma slots. The goal is that the order of an episode is carried by <em>when</em>
-          something fires inside the cycle, rather than stored beside it as an index.</p>
+          <h3>Hippocampal Theta–Gamma</h3>
+          <p class="rz-say">Each slow theta cycle is cut into fast gamma slots, so an episode's order is
+          carried by timing.</p>
         </article>
 
         <!-- declared: design intent, no numbers -->
         <article class="rz-tile" data-status="declared">
           <figure class="snap rz-snap" data-snap="rz_att"><canvas></canvas><svg class="leaders"></svg><div class="snap-labels"></div></figure>
-          <h3>Fronto-Parietal Dorsal Attention</h3>
-          <p class="rz-say">Occipito-temporal cortex proposes what is worth looking at, parietal cortex
-          holds the map it is proposed on, and frontal cortex commits to one place. The goal is that
-          visual salience is a competition running inside the substrate, not a saliency map bolted on.</p>
+          <h3>Fronto-Parietal Attention</h3>
+          <p class="rz-say">Visual cortex proposes, parietal cortex maps, frontal cortex picks one place
+          to look.</p>
         </article>
 
-        <!-- declared: design intent, no numbers -->
-        <article class="rz-tile" data-status="declared">
-          <figure class="snap rz-snap" data-snap="rz_lim"><canvas></canvas><svg class="leaders"></svg><div class="snap-labels"></div></figure>
-          <h3>Amygdala–vmPFC–Accumbens Valuation</h3>
-          <p class="rz-say">The amygdala scores what has just arrived, ventromedial prefrontal cortex and
-          the anterior cingulate revise that score against context, and the accumbens turns it into a pull
-          toward or away. The goal is that value is a state of a brain attached to a body, not a scalar
-          handed in from outside it.</p>
+        <!-- the rest of the catalogue in one figure: rz_more cycles through the
+             other drawn loops (resonance.js).  the count is the catalogue's own
+             loop total minus the three tiles above, filled in from
+             data/rhythms.js below, so it cannot drift from ibm/rhythms.py. -->
+        <article class="rz-tile rz-tile--more" data-status="declared">
+          <figure class="snap rz-snap" data-snap="rz_more"><canvas></canvas><svg class="leaders"></svg><div class="snap-labels"></div></figure>
+          <h3 id="rz-more-count">More circuits</h3>
+          <p class="rz-say">Basal ganglia, cerebellum, default mode, arousal, valuation, hearing,
+          vision and movement, each declared as a loop.</p>
         </article>
-
-        <!-- the six added last: every one declared, design intent, no numbers.
-             stage lists and the structures standing in for ones the graph does
-             not separate (pons, LGN, MGN, VL, VTA) are in resonance.js. -->
-        <div class="rz-extra" id="rz-extra">
-          <article class="rz-tile" data-status="declared">
-            <figure class="snap rz-snap" data-snap="rz_cbl"><canvas></canvas><svg class="leaders"></svg><div class="snap-labels"></div></figure>
-            <h3>Cerebello-Thalamo-Cortical</h3>
-            <p class="rz-say">Motor cortex sends a copy of each command through the pons to the cerebellum,
-            which returns a correction through the thalamus before the movement has finished. The goal is
-            timing and error correction that come from the loop, not from a tuned controller.</p>
-          </article>
-
-          <article class="rz-tile" data-status="declared">
-            <figure class="snap rz-snap" data-snap="rz_dmn"><canvas></canvas><svg class="leaders"></svg><div class="snap-labels"></div></figure>
-            <h3>Default-Mode Network</h3>
-            <p class="rz-say">Posterior cingulate, precuneus, medial prefrontal and angular cortex rise together
-            when nothing outside demands attention. The goal is a resting brain with structure — recollection
-            and self-reference — rather than a model that idles between inputs.</p>
-          </article>
-
-          <article class="rz-tile" data-status="declared">
-            <figure class="snap rz-snap" data-snap="rz_aud"><canvas></canvas><svg class="leaders"></svg><div class="snap-labels"></div></figure>
-            <h3>Auditory Thalamocortical Gamma</h3>
-            <p class="rz-say">Cochlea, brainstem, medial geniculate and Heschl's gyrus, each station locking to
-            the timing of the sound. The goal is that speech is followed by a loop that entrains to it, not by a
-            spectrogram handed in from outside.</p>
-          </article>
-
-          <article class="rz-tile" data-status="declared">
-            <figure class="snap rz-snap" data-snap="rz_aro"><canvas></canvas><svg class="leaders"></svg><div class="snap-labels"></div></figure>
-            <h3>Brainstem–Thalamic Arousal</h3>
-            <p class="rz-say">The ascending arousal system sets how the thalamus gates the cortex, and so whether
-            the brain is awake, drowsy or asleep. The goal is that sleep and waking are states the substrate
-            moves between, not modes chosen by a flag.</p>
-          </article>
-
-          <article class="rz-tile" data-status="declared">
-            <figure class="snap rz-snap" data-snap="rz_vis"><canvas></canvas><svg class="leaders"></svg><div class="snap-labels"></div></figure>
-            <h3>Retino-Geniculo-Striate Alpha</h3>
-            <p class="rz-say">Retina to the lateral geniculate to striate cortex and out into the visual
-            hierarchy, with the thalamus gating what gets through. The goal is that eyes open and eyes closed
-            are one loop in two states.</p>
-          </article>
-
-          <article class="rz-tile" data-status="declared">
-            <figure class="snap rz-snap" data-snap="rz_mu"><canvas></canvas><svg class="leaders"></svg><div class="snap-labels"></div></figure>
-            <h3>Sensorimotor Mu</h3>
-            <p class="rz-say">Sensorimotor cortex idles in a rhythm that breaks the moment a movement is
-            planned, made or watched. The goal is that preparing to act shows in the loop before any muscle
-            moves.</p>
-          </article>
-        </div>
-
       </div>
 
-      <p class="rz-foot">Each figure lights the structures the substrate actually declares for that
-      loop and runs a wave around it. The on-screen rate is a depiction — every band slowed by the same
-      factor so that none of them alias — and is not a measured frequency.</p>
-
-      <!-- the catalogue itself.  rhythmtable.js builds every row at runtime from
-           data/rhythms.js (generated by scripts/export_rhythms.py from
-           ibm/rhythms.py), so no band, peak, station, state or count on this page
-           is typed by hand and the table cannot drift from the table the trainer
-           scores.  the eleven tiles above are hand-written prose and can. -->
-      <div class="rzt" id="rhythm-table"></div>
+      <p class="rz-foot">Each figure lights the structures the substrate declares for that loop and runs
+      a wave around it. The on-screen rate is a depiction, not a measured frequency.</p>
     </section>
 
     <!-- ------------------------------------------------ EEG decoding -->
@@ -387,7 +313,7 @@ ckpt = hf_hub_download(<span class="str">"<span data-rel="repo">jacob-valdez/ibm
 <script src="brain.js?v=20260918115418"></script>
 <!-- registers the resonance tiles' snap specs; must run before site.js, which is
      what actually calls mountSnapshots over every [data-snap] on the page -->
-<script src="resonance.js?v=20260918115418"></script>
+<script src="resonance.js?v=20261028120000"></script>
 <div id="lightbox" class="lb" hidden>
   <button class="lb-close" aria-label="close">×</button>
   <button class="lb-nav lb-prev" aria-label="previous">‹</button>
@@ -404,10 +330,15 @@ ckpt = hf_hub_download(<span class="str">"<span data-rel="repo">jacob-valdez/ibm
 <script src="data/cortex.js?v=20260918115418"></script>
 <script src="tms.js?v=20260918115418"></script>
 <script src="spine.js?v=20260918115418"></script>
-<!-- the rhythm catalogue and the table built from it.  the data file must come
-     first, and both must come after the section's markup (they read #rhythm-table
-     at load); neither depends on three.js or on brain.js. -->
+<!-- the rhythm catalogue, read only for the fourth tile's count: every loop in
+     ibm/rhythms.py, less the three drawn by name above. -->
 <script src="data/rhythms.js?v=20260918171335"></script>
-<script src="rhythmtable.js?v=20260918171335"></script>
+<script>
+(function () {
+  var D = window.IBM_RHYTHMS, el = document.getElementById('rz-more-count');
+  var named = document.querySelectorAll('.rz-grid .rz-tile:not(.rz-tile--more)').length;
+  if (D && D.loops && el) el.textContent = (D.loops.length - named) + ' more circuits';
+})();
+</script>
 </body>
 </html>

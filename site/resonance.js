@@ -1,7 +1,8 @@
 /* ibm-1: the resonance tiles.
-   eleven named loops -- five shown, six more behind the grid's "more" -- each
-   drawn as the structures the substrate actually declares for it and lit as a
-   wave travelling round the loop.
+   eleven named loops, each drawn as the structures the substrate actually
+   declares for it and lit as a wave travelling round the loop.  since
+   2026-10-28 three are shown by name and the other eight play in turn inside
+   one fourth tile, rz_more ("N more circuits", N from the catalogue).
 
    two things this file is NOT allowed to imply, and both cost real time
    elsewhere on this page:
@@ -88,7 +89,7 @@
 
   const blank = () => new Float32Array(N);
 
-  B.registerSnaps({
+  const FIRST = {
     // thalamus -> frontal -> parietal -> occipital -> thalamus.  the one loop
     // here that has been measured: scripts/fit_sleep_resonance.py fitted the
     // declared alpha_resonator to N2 spectra, split BY SUBJECT, and the centre
@@ -156,10 +157,11 @@
         reg('hippocampus', 'insula'),
       ], { band: 5, base: 0.26 }),
     },
-  });
+  };
+  B.registerSnaps(FIRST);
 
   // ---- the six behind "more".  all declared, none measured; same rules. ----
-  B.registerSnaps({
+  const REST = {
     // motor cortex -> pons -> cerebellum -> thalamus (VL) -> motor cortex.  the
     // pontine nuclei are inside the `brainstem` blob, and VL is inside `thalamus`.
     rz_cbl: {
@@ -234,6 +236,24 @@
         reg('precentral'),
         reg('paracentral'),
       ], { band: 11, base: 0.26 }),
+    },
+  };
+  B.registerSnaps(REST);
+
+  // ---- the fourth tile: "N more circuits".  no new anatomy -- it plays the
+  // eight drawn loops that are not on the page by name, one after another, each
+  // for SEG seconds.  still pure in (w, t): which loop plays is a function of t.
+  const SNAPS = Object.assign({}, FIRST, REST);
+  const others = ['rz_bg', 'rz_lim', 'rz_cbl', 'rz_dmn', 'rz_aud', 'rz_aro', 'rz_vis', 'rz_mu']
+    .map((k) => SNAPS[k] && SNAPS[k].pulse).filter(Boolean);
+  const SEG = 3.2;
+  B.registerSnaps({
+    rz_more: {
+      az: 0.25, el: 0.32, dist: 360, aspect: 0.88, scalp: 0.24, weights: blank,
+      pulse: function (w, t) {
+        if (!others.length) { for (let i = 0; i < N; i++) w[i] = 0.055; return; }
+        others[Math.floor(t / SEG) % others.length](w, t);
+      },
     },
   });
 
